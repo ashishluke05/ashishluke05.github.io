@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ashish Kumar | Android Developer</title>
-<meta name="description" content="Ashish Kumar is an independent Android developer and the maker of Legend Guitar Tuner, an accurate guitar tuner with a live pitch graph.">
+<title>Legend Guitar Tuner | Ashish Kumar</title>
+<meta name="description" content="Legend Guitar Tuner is an accurate Android guitar tuner with a live pitch graph, built by independent developer Ashish Kumar.">
 <meta name="author" content="Ashish Kumar">
 <link rel="canonical" href="https://ashishluke05.github.io/">
 <link rel="icon" href="assets/legend-guitar-tuner-icon.png" type="image/png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Ashish Kumar | Android Developer">
-<meta property="og:description" content="Maker of Legend Guitar Tuner, an accurate guitar tuner with a live pitch graph.">
+<meta property="og:title" content="Legend Guitar Tuner | Ashish Kumar">
+<meta property="og:description" content="An accurate Android guitar tuner with a live pitch graph.">
 <meta property="og:url" content="https://ashishluke05.github.io/">
 <meta property="og:image" content="https://ashishluke05.github.io/assets/share.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0b1020">
+<meta name="theme-color" content="#0f0a08">
 <link rel="preload" href="assets/fonts/bricolage-700-800.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  /* Layout: the name set large, then a full-width tuner strip with a cents scale. The in-tune
-     centre line of that strip is the one bold element; everything below it stays quiet. */
+  /* Layout: the hero is a rosewood guitar neck running the full width, with real fret spacing and
+     pluckable strings. The phone rests on it. Below, the page stays dark and quiet. */
   @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/bricolage-700-800.woff2") format("woff2"); font-weight: 700 800; font-display: swap; }
   @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/instrument-400-600.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
   @font-face { font-family: "IBM Plex Mono"; src: url("assets/fonts/plexmono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
@@ -26,11 +26,12 @@
 
   :root {
     color-scheme: dark;
-    --bg: #0b1020;
-    --surface: #131a31;
-    --line: #27304c;
-    --fg: #e8ecf6;
-    --muted: #9aa3b8;
+    --bg: #0f0a08;
+    --surface: #1a1210;
+    --line: #3b2b23;
+    --fg: #f4ede5;
+    --muted: #b9a99b;
+    --brass: #e2a85c;
     --accent: #22d3ee;
     --accent-ink: #06202a;
     --tune: #3dffa2;
@@ -38,29 +39,17 @@
     --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
     --body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      color-scheme: light;
-      --bg: #f2f5fa;
-      --surface: #ffffff;
-      --line: #d3dae8;
-      --fg: #111a30;
-      --muted: #4e5a72;
-      --accent: #086f8a;
-      --accent-ink: #ffffff;
-      --tune: #06794f;
-      --off: #975e00;
-    }
+    --phone: clamp(236px, 23vw, 292px);
+    --ease: cubic-bezier(.2, .8, .2, 1);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); overflow-x: hidden; }
   img { display: block; max-width: 100%; height: auto; }
-  a { color: var(--accent); text-underline-offset: 3px; }
+  a { color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-  h1, h2, h3, p, dl, dd, ul { margin: 0; padding: 0; }
+  h1, h2, h3, p, dl, dd, ul, figure { margin: 0; padding: 0; }
   ul { list-style: none; }
   h1, h2, h3 { font-family: var(--display); font-weight: 800; text-wrap: balance; }
 
@@ -69,23 +58,74 @@
     padding-left: max(20px, env(safe-area-inset-left, 0px));
     padding-right: max(20px, env(safe-area-inset-right, 0px));
   }
-  .label { font: 500 0.75rem/1.4 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  .label { font: 500 0.75rem/1.4 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; color: var(--brass); }
+  section { scroll-margin-top: 16px; }
+  section > .wrap { padding-block: 76px; }
+  .section-title { font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -0.015em; margin-top: 8px; }
 
-  .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
-  .wordmark { font: 700 1.05rem/1 var(--display); color: var(--fg); text-decoration: none; }
-  .site-head nav { display: flex; gap: 22px; }
-  .site-head nav a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
-  .site-head nav a:hover { color: var(--fg); }
+  /* A link underline that shakes like a plucked string. */
+  .pluck { position: relative; display: inline-block; color: inherit; text-decoration: none; }
+  .pluck::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px; background: var(--accent); opacity: 0.55; }
+  .pluck:hover { color: var(--accent); }
+  .pluck:hover::after { opacity: 1; animation: vibrate 0.6s var(--ease); }
+  @keyframes vibrate {
+    0% { transform: translateY(0); } 12% { transform: translateY(-3px); } 24% { transform: translateY(3px); }
+    36% { transform: translateY(-2px); } 48% { transform: translateY(2px); } 60% { transform: translateY(-1px); }
+    74% { transform: translateY(1px); } 100% { transform: translateY(0); }
+  }
 
-  .hero .wrap { display: grid; gap: 18px; padding-block: 34px 30px; }
-  .hero h1 { font-size: clamp(3.3rem, 13.4vw, 10.25rem); line-height: 0.94; letter-spacing: -0.035em; }
-  .hero-line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px; }
-  .hero-line p { font-size: clamp(1.15rem, 2.2vw, 1.45rem); line-height: 1.4; max-width: 42em; color: var(--muted); text-wrap: pretty; }
-  .hero-line p strong { color: var(--fg); font-weight: 600; }
+  .button {
+    display: inline-flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px;
+    background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none; border: 1.5px solid var(--accent);
+    transition: transform .22s var(--ease), box-shadow .22s var(--ease), background-color .22s, color .22s;
+  }
+  .button:hover { transform: translateY(-3px); box-shadow: 0 12px 34px rgba(34, 211, 238, .4); }
+  .button:active { transform: translateY(0) scale(.98); }
+  .button.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+  .button.ghost:hover { border-color: var(--brass); color: var(--brass); box-shadow: 0 12px 34px rgba(226, 168, 92, .2); }
 
-  /* Tuner strip */
+  .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+  .wordmark { font: 700 1.02rem/1 var(--display); color: var(--fg); text-decoration: none; }
+  .site-head nav { display: flex; gap: 22px; font-size: 0.95rem; color: var(--muted); }
+  .site-head .pluck::after { opacity: 0; }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; isolation: isolate; }
+  #neck { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; touch-action: pan-y; }
+  .scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(90deg, rgba(15, 10, 8, .95) 0%, rgba(15, 10, 8, .88) 44%, rgba(15, 10, 8, 0) 64%); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: center; padding-block: 62px 66px; }
+  .hero-copy { display: grid; gap: 20px; justify-items: start; min-width: 0; }
+  .hero h1 { font-size: clamp(2.7rem, 6vw, 4.9rem); line-height: 1; letter-spacing: -0.028em; }
+  .hero-text { font-size: clamp(1.1rem, 1.8vw, 1.3rem); line-height: 1.45; max-width: 27em; color: var(--muted); text-wrap: pretty; }
+  .hero-text strong { color: var(--fg); font-weight: 600; }
+  .pill { font: 500 0.8rem/1 var(--mono); color: var(--tune); border: 1px solid currentColor; border-radius: 999px; padding: 7px 11px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hint { font: 400 0.8rem/1.4 var(--mono); color: var(--muted); }
+  .hint .touch { display: none; }
+  @media (hover: none) { .hint .mouse { display: none; } .hint .touch { display: inline; } }
+
+  /* Phone mockup */
+  .phone-stage { perspective: 1100px; margin-right: clamp(0px, 6vw, 84px); }
+  .phone {
+    --ry: -9deg; --rx: 3deg; --gx: 30%; --gy: 18%;
+    position: relative; width: var(--phone); padding: 9px; border-radius: 42px; background: linear-gradient(145deg, #34343c, #101014 42%, #26262c);
+    box-shadow: 0 0 0 1px #4b4b55, 0 46px 80px rgba(0, 0, 0, .68), 0 8px 22px rgba(0, 0, 0, .5);
+    transform: rotateY(var(--ry)) rotateX(var(--rx)); transform-style: preserve-3d;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .phone:hover { box-shadow: 0 0 0 1px #5d5d68, 0 46px 80px rgba(0, 0, 0, .68), 0 0 76px rgba(34, 211, 238, .42); }
+  .phone::before { content: ""; position: absolute; right: -3px; top: 21%; width: 3px; height: 15%; border-radius: 0 3px 3px 0; background: #3a3a42; }
+  .screen { position: relative; aspect-ratio: 720 / 1420; border-radius: 33px; overflow: hidden; background: #0b1020; }
+  .screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; }
+  .screen img.on { opacity: 1; }
+  .glare { position: absolute; inset: 9px; border-radius: 33px; pointer-events: none; opacity: .4; transition: opacity .3s; background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 52%); }
+  .phone:hover .glare { opacity: 1; }
+
+  /* Tuner demo */
   .strip { border-block: 1px solid var(--line); background: var(--surface); }
-  .strip-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding-block: 16px; }
+  .strip .wrap { padding-block: 0; }
+  .strip-head { padding-block: 26px 4px; }
+  .strip-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding-block: 14px; }
   .readout { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 18px; font-family: var(--mono); font-variant-numeric: tabular-nums; min-width: 0; }
   .note { font: 800 2.5rem/1 var(--display); color: var(--fg); }
   .note sub { font: 500 1rem/1 var(--mono); color: var(--muted); vertical-align: baseline; margin-left: 2px; }
@@ -94,49 +134,51 @@
   .status[data-in="true"] { color: var(--tune); }
   .strings { display: flex; flex-wrap: wrap; gap: 6px; }
   .strings button {
-    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: transparent;
-    color: var(--fg); cursor: pointer; font: 600 0.95rem/1 var(--body); padding: 0; transition: border-color .15s, background-color .15s;
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer;
+    font: 600 0.95rem/1 var(--body); padding: 0; transition: transform .2s var(--ease), border-color .2s, box-shadow .2s, background-color .2s;
   }
   .strings button small { font: 500 0.62rem/1 var(--mono); color: var(--muted); margin-left: 1px; }
-  .strings button:hover { border-color: var(--accent); }
+  .strings button:hover { border-color: var(--accent); transform: translateY(-3px) scale(1.06); box-shadow: 0 0 20px rgba(34, 211, 238, .4); }
   .strings button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .strings button[aria-pressed="true"] small { color: inherit; }
-  #tuner { display: block; width: 100%; height: clamp(230px, 30vw, 330px); }
-  .strip-note { padding-block: 10px 14px; color: var(--muted); font-size: 0.9rem; }
+  #tuner { display: block; width: 100%; height: clamp(220px, 26vw, 300px); }
+  .strip-note { padding-block: 10px 16px; color: var(--muted); font-size: 0.9rem; }
 
-  /* Apps */
-  section { scroll-margin-top: 16px; }
-  .apps .wrap { display: grid; gap: 48px; padding-block: 72px; }
-  .app { display: grid; gap: 40px 56px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; }
-  .app-copy { display: grid; gap: 22px; min-width: 0; }
-  .app-title { display: flex; align-items: center; gap: 16px; min-width: 0; }
-  .app-title img { width: 64px; height: 64px; border-radius: 15px; flex: none; }
-  .app-title h3 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.08; letter-spacing: -0.015em; }
-  .pill { justify-self: start; font: 500 0.8rem/1 var(--mono); color: var(--tune); border: 1px solid currentColor; border-radius: 999px; padding: 7px 11px; }
-  .lede { font-size: 1.2rem; line-height: 1.5; }
+  /* Gallery */
+  .shots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; margin-top: 40px; }
+  .shots figure { display: grid; gap: 12px; min-width: 0; transition: transform .32s var(--ease), opacity .25s; }
+  .shots figure:nth-child(1) { transform: rotate(-2.2deg); }
+  .shots figure:nth-child(2) { transform: rotate(1.2deg) translateY(14px); }
+  .shots figure:nth-child(3) { transform: rotate(-1.2deg); }
+  .shots figure:nth-child(4) { transform: rotate(2.2deg) translateY(14px); }
+  .shots img { width: 100%; border-radius: 22px; border: 1px solid var(--line); transition: box-shadow .32s var(--ease), border-color .32s; }
+  .shots figcaption { font: 400 0.82rem/1.35 var(--mono); color: var(--muted); transition: color .2s; }
+  @media (hover: hover) {
+    .shots:hover figure { opacity: .5; }
+    .shots figure:hover { opacity: 1; transform: rotate(0) translateY(-14px) scale(1.05); z-index: 1; }
+    .shots figure:hover img { border-color: var(--tune); box-shadow: 0 22px 60px rgba(61, 255, 162, .26); }
+    .shots figure:hover figcaption { color: var(--tune); }
+  }
 
+  /* Details */
+  .details { border-top: 1px solid var(--line); }
+  .details-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: start; }
+  .details-copy { display: grid; gap: 22px; min-width: 0; }
+  .lede { font-size: 1.15rem; line-height: 1.5; color: var(--muted); }
   .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; border-block: 1px solid var(--line); padding-block: 18px; }
-  .facts dd { font: 800 1.65rem/1.15 var(--display); margin-top: 6px; font-variant-numeric: tabular-nums; }
-
-  .plans { display: grid; }
-  .plans li { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 14px; padding-block: 11px; border-bottom: 1px solid var(--line); }
+  .facts dd { font: 800 1.6rem/1.15 var(--display); margin-top: 6px; font-variant-numeric: tabular-nums; transition: color .2s; }
+  .facts div:hover dd { color: var(--tune); }
+  .plans { display: grid; min-width: 0; }
+  .plans li { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 14px; padding: 15px 12px; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background-color .2s, transform .25s var(--ease); }
   .plans li:last-child { border-bottom: 0; }
-  .plans b { font-weight: 600; }
-  .links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
-
-  .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; min-width: 0; position: sticky; top: 24px; }
-  .shots figure { margin: 0; display: grid; gap: 10px; min-width: 0; }
-  .shots figure:nth-child(2) { transform: translateY(26px); }
-  .shots img { border-radius: 18px; border: 1px solid var(--line); width: 100%; }
-  .shots figcaption { font: 400 0.8rem/1.35 var(--mono); color: var(--muted); }
+  .plans li:hover { background: var(--surface); transform: translateX(6px); }
+  .plans b { font-weight: 600; color: var(--brass); }
 
   /* Testers */
   .testers { background: var(--surface); border-block: 1px solid var(--line); }
-  .testers .wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 24px 48px; align-items: center; padding-block: 52px; }
+  .testers .wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 24px 48px; align-items: center; padding-block: 56px; }
   .testers h2 { font-size: clamp(1.8rem, 4vw, 2.75rem); line-height: 1.08; letter-spacing: -0.015em; margin-bottom: 10px; }
   .testers p { max-width: 38em; color: var(--muted); }
-  .button { display: inline-flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none; }
-  .button:hover { filter: brightness(1.08); }
 
   /* Footer */
   .site-foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 48px; padding-block: 44px 52px; }
@@ -144,23 +186,30 @@
   .site-foot p { color: var(--muted); }
   .site-foot .meta { align-self: flex-end; font-size: 0.92rem; }
 
-  @media (max-width: 900px) {
-    .app { grid-template-columns: minmax(0, 1fr); }
-    .shots { position: static; }
-    .shots figure:nth-child(2) { transform: none; }
-    .testers .wrap { grid-template-columns: minmax(0, 1fr); }
+  @media (max-width: 980px) {
+    .shots { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 620px; margin-inline: auto; }
+    .details-grid, .testers .wrap { grid-template-columns: minmax(0, 1fr); }
     .testers .button { justify-self: start; }
   }
+  @media (max-width: 800px) {
+    #neck { bottom: auto; height: 506px; }
+    .scrim { display: none; }
+    .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 30px 44px; }
+    .phone-stage { order: -1; justify-self: center; margin-right: 0; }
+  }
   @media (max-width: 560px) {
-    .apps .wrap { padding-block: 52px; }
+    section > .wrap { padding-block: 54px; }
     .strings { width: 100%; justify-content: space-between; gap: 2px; }
     .strings button { width: 44px; height: 44px; }
-    .shots { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 8px; }
-    .shots figure { scroll-snap-align: start; }
-    .facts dd { font-size: 1.35rem; }
+    .shots { display: flex; max-width: none; gap: 14px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 8px; margin-top: 28px; }
+    .shots figure, .shots figure:nth-child(n) { flex: 0 0 62%; transform: none; scroll-snap-align: start; }
+    .facts dd { font-size: 1.3rem; }
     .facts .label { font-size: 0.68rem; }
   }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -168,25 +217,47 @@
   <div class="wrap">
     <a class="wordmark" href="#top">Ashish Kumar</a>
     <nav aria-label="Main">
-      <a href="#apps">Apps</a>
-      <a href="#contact">Contact</a>
+      <a class="pluck" href="#inside">App</a>
+      <a class="pluck" href="#testers">Test it</a>
+      <a class="pluck" href="#contact">Contact</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
-  <div class="hero">
-    <div class="wrap">
-      <p class="label">Independent Android developer</p>
-      <h1>Ashish Kumar</h1>
-      <div class="hero-line">
-        <p>I build focused, carefully tuned Android apps. <strong>The first one is for guitar players.</strong></p>
+  <div class="hero" id="hero">
+    <canvas id="neck" aria-hidden="true"></canvas>
+    <div class="scrim"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="label">Android app by Ashish Kumar</p>
+        <h1>Legend Guitar Tuner</h1>
+        <p class="hero-text"><strong>Accurate. Fast. Steady.</strong> Watch every string settle into tune on a live pitch graph, from Standard down to Drop A.</p>
+        <p class="pill">In closed testing on Google Play</p>
+        <div class="actions">
+          <a class="button" href="#testers">Become a tester</a>
+          <a class="button ghost" href="#inside">See inside the app</a>
+        </div>
+        <p class="hint"><span class="mouse">Run your cursor across the strings.</span><span class="touch">Tap the strings to pluck them.</span></p>
+      </div>
+      <div class="phone-stage">
+        <div class="phone" id="phone">
+          <div class="screen" id="screen">
+            <img class="on" src="assets/in-tune.webp" width="720" height="1420" alt="Legend Guitar Tuner showing the A string in tune on the pitch graph." fetchpriority="high">
+            <img src="assets/arc-gauge.webp" width="720" height="1420" alt="" loading="lazy">
+            <img src="assets/tune-down.webp" width="720" height="1420" alt="" loading="lazy">
+          </div>
+          <span class="glare"></span>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="strip" aria-label="Simulated guitar tuner">
     <div class="wrap">
+      <div class="strip-head">
+        <p class="label">Try the pitch graph</p>
+      </div>
       <div class="strip-top">
         <div class="readout" aria-live="off">
           <span class="note" id="note">A<sub>2</sub></span>
@@ -198,44 +269,45 @@
     </div>
     <canvas id="tuner" role="img" aria-label="A pitch trace scrolling down a scale from minus 50 to plus 50 cents and settling on the green in-tune line."></canvas>
     <div class="wrap">
-      <p class="strip-note">A simulation of the pitch graph in Legend Guitar Tuner. Tap a string to pluck it. The app itself listens through your phone's microphone.</p>
+      <p class="strip-note">A simulation of the graph in the app. Tap a string to pluck it. The real app listens through your phone's microphone.</p>
     </div>
   </div>
 
-  <section class="apps" id="apps" aria-labelledby="apps-heading">
+  <section id="inside" aria-labelledby="inside-heading">
     <div class="wrap">
-      <h2 class="label" id="apps-heading">Apps</h2>
-      <article class="app">
-        <div class="app-copy">
-          <div class="app-title">
-            <img src="assets/legend-guitar-tuner-icon.png" width="64" height="64" alt="">
-            <h3>Legend Guitar Tuner</h3>
-          </div>
-          <p class="pill">In closed testing on Google Play</p>
-          <p class="lede">An accurate guitar tuner with a live pitch graph. Watch each string settle into tune, and get clear tune up or tune down guidance.</p>
-          <dl class="facts">
-            <div><dt class="label">Tunings</dt><dd>18</dd></div>
-            <div><dt class="label">Reference</dt><dd>415–466 Hz</dd></div>
-            <div><dt class="label">Precision</dt><dd>±2 to ±5¢</dd></div>
-          </dl>
-          <ul class="plans">
-            <li><b>Free</b><span>Standard tuning and your own custom tunings, with no ads.</span></li>
-            <li><b>One ad</b><span>Watch a short ad to unlock another tuning until you close the app.</span></li>
-            <li><b>Pro</b><span>Every tuning and no ads, as a monthly or yearly subscription.</span></li>
-          </ul>
-          <p>Tuning works offline. Your audio stays on your device and is never recorded.</p>
-          <div class="links"><a href="pro-guitar-tuner/privacy-policy.html">Privacy policy</a></div>
-        </div>
-        <div class="shots">
-          <figure><img src="assets/tune-down.webp" width="540" height="1065" alt="The pitch graph showing A2 thirteen cents sharp with a tune down prompt." loading="lazy"><figcaption>Pitch graph</figcaption></figure>
-          <figure><img src="assets/in-tune.webp" width="540" height="1065" alt="The pitch graph with the A string settled on the in-tune line." loading="lazy"><figcaption>In tune</figcaption></figure>
-          <figure><img src="assets/arc-gauge.webp" width="540" height="1065" alt="The arc gauge view showing the high E string in tune." loading="lazy"><figcaption>Arc gauge</figcaption></figure>
-        </div>
-      </article>
+      <p class="label">Inside the app</p>
+      <h2 class="section-title" id="inside-heading">Four screens, one job: get you in tune.</h2>
+      <div class="shots">
+        <figure><img src="assets/tune-down.webp" width="720" height="1420" alt="The pitch graph showing A2 thirteen cents sharp with a tune down prompt." loading="lazy"><figcaption>Pitch graph</figcaption></figure>
+        <figure><img src="assets/arc-gauge.webp" width="720" height="1420" alt="The arc gauge view showing the high E string in tune." loading="lazy"><figcaption>Arc gauge</figcaption></figure>
+        <figure><img src="assets/library.webp" width="720" height="1420" alt="The tuning library with Standard, Half Step Down and Drop tunings." loading="lazy"><figcaption>18 tunings</figcaption></figure>
+        <figure><img src="assets/settings.webp" width="720" height="1420" alt="Settings for reference pitch, in-tune precision, visualizer and theme." loading="lazy"><figcaption>Your settings</figcaption></figure>
+      </div>
     </div>
   </section>
 
-  <section class="testers" aria-labelledby="testers-heading">
+  <section class="details" aria-labelledby="details-heading">
+    <div class="wrap details-grid">
+      <div class="details-copy">
+        <p class="label">Details</p>
+        <h2 class="section-title" id="details-heading">Made for players</h2>
+        <p class="lede">Tuning works offline. Your audio stays on your device and is never recorded.</p>
+        <dl class="facts">
+          <div><dt class="label">Tunings</dt><dd>18</dd></div>
+          <div><dt class="label">Reference</dt><dd>415–466 Hz</dd></div>
+          <div><dt class="label">Precision</dt><dd>±2 to ±5¢</dd></div>
+        </dl>
+        <p><a class="pluck" href="pro-guitar-tuner/privacy-policy.html">Privacy policy</a></p>
+      </div>
+      <ul class="plans">
+        <li><b>Free</b><span>Standard tuning and your own custom tunings, with no ads.</span></li>
+        <li><b>One ad</b><span>Watch a short ad to unlock another tuning until you close the app.</span></li>
+        <li><b>Pro</b><span>Every tuning and no ads, as a monthly or yearly subscription.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="testers" id="testers" aria-labelledby="testers-heading">
     <div class="wrap">
       <div>
         <h2 id="testers-heading">Play guitar? Help me test it.</h2>
@@ -250,13 +322,252 @@
   <div class="wrap">
     <div>
       <h2>Contact</h2>
-      <p>Support and questions: <a href="mailto:maxste007@gmail.com">maxste007@gmail.com</a></p>
+      <p>Built by Ashish Kumar, independent Android developer.</p>
+      <p>Support and questions: <a class="pluck" href="mailto:maxste007@gmail.com">maxste007@gmail.com</a></p>
     </div>
     <p class="meta">© 2026 Ashish Kumar</p>
   </div>
 </footer>
 
 <script>
+var STILL = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Guitar neck: fret spacing follows the real 12th-root-of-two rule; strings pluck when crossed. */
+(function () {
+  var NAMES = [['E4', 329.63], ['B3', 246.94], ['G3', 196], ['D3', 146.83], ['A2', 110], ['E2', 82.41]];
+  var GAUGE = [0.9, 1.15, 1.5, 2.1, 2.7, 3.3];
+  var INLAYS = [3, 5, 7, 9, 15, 17, 19, 21];
+  var hero = document.getElementById('hero');
+  var canvas = document.getElementById('neck');
+  var ctx = canvas.getContext('2d');
+  var board = document.createElement('canvas');
+  var strings = NAMES.map(function () { return { amp: 0, at: 0, x: 0.5 }; });
+  var width = 0, height = 0, top = 0, bandHeight = 0, last = null, visible = true, frame = 0, nextIdle = 0, idleString = 4;
+
+  function fretX(n) { return width * 1.5 * (1 - Math.pow(2, -n / 12)); }
+
+  function stringY(i, x) {
+    var spacing = bandHeight / 7.1;
+    return top + bandHeight / 2 + (i - 2.5) * spacing * (0.84 + 0.16 * x / width);
+  }
+
+  function paintBoard(ratio) {
+    board.width = canvas.width;
+    board.height = canvas.height;
+    var b = board.getContext('2d');
+    b.setTransform(ratio, 0, 0, ratio, 0, 0);
+    var wood = b.createLinearGradient(0, top, 0, top + bandHeight);
+    wood.addColorStop(0, '#2a1810');
+    wood.addColorStop(0.5, '#38210f');
+    wood.addColorStop(1, '#22130c');
+    b.fillStyle = wood;
+    b.fillRect(0, top, width, bandHeight);
+
+    var seed = 7;
+    function random() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    for (var g = 0; g < 190; g++) {
+      var y = top + random() * bandHeight, drift = (random() - 0.5) * 18;
+      b.strokeStyle = random() > 0.5 ? 'rgba(0,0,0,.26)' : 'rgba(150,92,48,.09)';
+      b.lineWidth = 0.5 + random() * 1.3;
+      b.beginPath();
+      b.moveTo(0, y);
+      b.bezierCurveTo(width * 0.3, y + drift, width * 0.7, y - drift, width, y + drift * 0.4);
+      b.stroke();
+    }
+
+    b.fillStyle = '#d9cbb2';
+    b.fillRect(0, top - 3, width, 3);
+    b.fillRect(0, top + bandHeight, width, 3);
+    b.fillStyle = 'rgba(0,0,0,.45)';
+    b.fillRect(0, top + bandHeight + 3, width, 6);
+
+    INLAYS.concat([12]).forEach(function (n) {
+      var x = (fretX(n) + fretX(n - 1)) / 2;
+      if (x > width) return;
+      (n === 12 ? [-0.2, 0.2] : [0]).forEach(function (shift) {
+        var y = top + bandHeight * (0.5 + shift), r = Math.min(9, bandHeight * 0.027);
+        var pearl = b.createRadialGradient(x - r / 3, y - r / 3, 1, x, y, r);
+        pearl.addColorStop(0, '#f5efe4');
+        pearl.addColorStop(0.6, '#c9c3bd');
+        pearl.addColorStop(1, '#8d8a93');
+        b.fillStyle = pearl;
+        b.beginPath();
+        b.arc(x, y, r, 0, Math.PI * 2);
+        b.fill();
+      });
+    });
+
+    for (var n = 1; n < 26; n++) {
+      var x = fretX(n);
+      if (x > width) break;
+      b.fillStyle = 'rgba(0,0,0,.5)';
+      b.fillRect(x + 2, top, 3, bandHeight);
+      var fret = b.createLinearGradient(x - 2, 0, x + 2, 0);
+      fret.addColorStop(0, '#6d6a66');
+      fret.addColorStop(0.5, '#e9e6df');
+      fret.addColorStop(1, '#6f6b66');
+      b.fillStyle = fret;
+      b.fillRect(x - 2, top, 4, bandHeight);
+    }
+  }
+
+  function resize() {
+    var ratio = Math.min(window.devicePixelRatio || 1, 2);
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    top = Math.round(height * 0.11);
+    bandHeight = Math.round(height * 0.78);
+    paintBoard(ratio);
+    draw(performance.now());
+  }
+
+  function envelope(x, p) {
+    var triangle = x < p ? x / p : (width - x) / (width - p);
+    return 0.6 * triangle + 0.4 * Math.sin(Math.PI * x / width);
+  }
+
+  function path(i, offset) {
+    ctx.beginPath();
+    for (var x = 0; x <= width + 8; x += 8) {
+      var y = stringY(i, x) + offset(x);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+  }
+
+  function draw(now) {
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(board, 0, 0, width, height);
+    ctx.lineCap = 'round';
+    strings.forEach(function (s, i) {
+      var age = Math.max(0, now - s.at) / 1000;
+      var amp = s.amp * Math.exp(-age / 0.85);
+      var moving = amp > 0.15;
+      var p = Math.max(0.05, Math.min(0.95, s.x)) * width;
+      var wave = moving ? Math.cos(age * (74 - i * 7)) : 0;
+      var offset = function (x) { return moving ? amp * wave * envelope(x, p) : 0; };
+
+      if (moving) {
+        ctx.fillStyle = 'rgba(34,211,238,' + Math.min(0.2, amp / 40) + ')';
+        ctx.beginPath();
+        var x;
+        for (x = 0; x <= width + 8; x += 8) ctx.lineTo(x, stringY(i, x) - amp * envelope(x, p));
+        for (x = width + 8; x >= 0; x -= 8) ctx.lineTo(x, stringY(i, x) + amp * envelope(x, p));
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = 'rgba(0,0,0,.55)';
+      ctx.lineWidth = GAUGE[i] + 1;
+      ctx.setLineDash([]);
+      path(i, function (x) { return offset(x) + 3; });
+      ctx.stroke();
+
+      var wound = i > 2;
+      ctx.strokeStyle = wound ? '#d9a860' : '#e8e6e1';
+      ctx.lineWidth = GAUGE[i];
+      path(i, offset);
+      ctx.stroke();
+      if (wound) {
+        ctx.strokeStyle = 'rgba(70,40,14,.75)';
+        ctx.setLineDash([1, 2.4]);
+        path(i, offset);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      if (amp > 0.5) {
+        ctx.globalAlpha = Math.min(1, amp / 5);
+        ctx.fillStyle = '#3dffa2';
+        ctx.font = '500 12px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(NAMES[i][0] + '  ' + NAMES[i][1].toFixed(1) + ' Hz', Math.max(70, Math.min(width - 70, p)), stringY(i, p) - amp - 10);
+        ctx.globalAlpha = 1;
+      }
+    });
+  }
+
+  function pluck(i, x, strength, now) {
+    strings[i].amp = strength;
+    strings[i].at = now;
+    strings[i].x = x / width;
+  }
+
+  function point(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  hero.addEventListener('pointermove', function (e) {
+    var p = point(e), now = performance.now();
+    if (last && !STILL) {
+      for (var i = 0; i < 6; i++) {
+        var before = last.y - stringY(i, last.x), after = p.y - stringY(i, p.x);
+        if (before * after <= 0 && before !== after) pluck(i, p.x, Math.min(11, 4 + Math.abs(p.y - last.y) * 0.4), now);
+      }
+    }
+    last = p;
+  });
+  hero.addEventListener('pointerleave', function () { last = null; });
+  hero.addEventListener('pointerdown', function (e) {
+    if (STILL) return;
+    var p = point(e), now = performance.now();
+    for (var i = 0; i < 6; i++) if (Math.abs(p.y - stringY(i, p.x)) < 18) pluck(i, p.x, 9, now);
+  });
+
+  function loop(now) {
+    frame = 0;
+    if (!visible || document.hidden) return;
+    if (now > nextIdle) {
+      pluck(idleString, width * 0.55, 6, now);
+      idleString = (idleString + 5) % 6;
+      nextIdle = now + 2800;
+    }
+    draw(now);
+    frame = requestAnimationFrame(loop);
+  }
+  function run() { if (!frame && !STILL) frame = requestAnimationFrame(loop); }
+
+  resize();
+  run();
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', run);
+  new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; run(); }).observe(canvas);
+})();
+
+/* Phone: tilts toward the cursor and cycles through real screens. */
+(function () {
+  var hero = document.getElementById('hero');
+  var phone = document.getElementById('phone');
+  var shots = document.querySelectorAll('#screen img');
+  if (STILL) return;
+
+  var shown = 0;
+  setInterval(function () {
+    if (document.hidden) return;
+    shots[shown].classList.remove('on');
+    shown = (shown + 1) % shots.length;
+    shots[shown].classList.add('on');
+  }, 3800);
+
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  hero.addEventListener('pointermove', function (e) {
+    var r = phone.getBoundingClientRect();
+    var dx = Math.max(-1.4, Math.min(1.4, (e.clientX - (r.left + r.width / 2)) / r.width));
+    var dy = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / r.height));
+    phone.style.setProperty('--ry', (dx * 11).toFixed(2) + 'deg');
+    phone.style.setProperty('--rx', (-dy * 9).toFixed(2) + 'deg');
+    phone.style.setProperty('--gx', (50 + dx * 45).toFixed(1) + '%');
+    phone.style.setProperty('--gy', (50 + dy * 55).toFixed(1) + '%');
+  });
+  hero.addEventListener('pointerleave', function () {
+    ['--ry', '--rx', '--gx', '--gy'].forEach(function (name) { phone.style.removeProperty(name); });
+  });
+})();
+
+/* Pitch graph demo. */
 (function () {
   var STRINGS = [['E', 2, 82.41], ['A', 2, 110], ['D', 3, 146.83], ['G', 3, 196], ['B', 3, 246.94], ['E', 4, 329.63]];
   var DETUNE = [-26, 17, -32, 22, -14, 28];
@@ -268,8 +579,6 @@
   var hz = document.getElementById('hz');
   var status = document.getElementById('status');
   var group = document.getElementById('strings');
-  var still = matchMedia('(prefers-reduced-motion: reduce)');
-  var light = matchMedia('(prefers-color-scheme: light)');
 
   var current = 1, plucks = 0, detune = DETUNE[1], startedAt = 0, width = 0, height = 0;
   var lastText = 0, visible = true, frame = 0, colors = {};
@@ -365,7 +674,7 @@
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    if (still.matches) draw(SETTLED);
+    if (STILL) draw(SETTLED);
   }
 
   function pluck(index) {
@@ -378,12 +687,12 @@
     Array.prototype.forEach.call(group.children, function (button, i) {
       button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
     });
-    if (still.matches) { draw(SETTLED); updateText(SETTLED); }
+    if (STILL) { draw(SETTLED); updateText(SETTLED); }
   }
 
   function tick(now) {
     frame = 0;
-    if (!visible || still.matches || document.hidden) return;
+    if (!visible || STILL || document.hidden) return;
     var t = (now - startedAt) / 1000;
     if (t > SETTLED) { pluck((current + 1) % STRINGS.length); t = 0; }
     draw(t);
@@ -391,7 +700,7 @@
     frame = requestAnimationFrame(tick);
   }
 
-  function run() { if (!frame && !still.matches) frame = requestAnimationFrame(tick); }
+  function run() { if (!frame && !STILL) frame = requestAnimationFrame(tick); }
 
   STRINGS.forEach(function (s, i) {
     var button = document.createElement('button');
@@ -406,14 +715,13 @@
   readColors();
   resize();
   startedAt = performance.now() - 1100;
-  draw(still.matches ? SETTLED : 1.1);
-  updateText(still.matches ? SETTLED : 1.1);
+  draw(STILL ? SETTLED : 1.1);
+  updateText(STILL ? SETTLED : 1.1);
   run();
 
   window.addEventListener('resize', resize);
-  light.addEventListener('change', function () { readColors(); if (still.matches) draw(SETTLED); });
   document.addEventListener('visibilitychange', run);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (still.matches) draw(SETTLED); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (STILL) draw(SETTLED); });
   new IntersectionObserver(function (entries) {
     visible = entries[0].isIntersecting;
     run();
