@@ -2,29 +2,423 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ashish Luke – Apps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ashish Kumar | Android Developer</title>
+<meta name="description" content="Ashish Kumar is an independent Android developer and the maker of Legend Guitar Tuner, an accurate guitar tuner with a live pitch graph.">
+<meta name="author" content="Ashish Kumar">
+<link rel="canonical" href="https://ashishluke05.github.io/">
+<link rel="icon" href="assets/legend-guitar-tuner-icon.png" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ashish Kumar | Android Developer">
+<meta property="og:description" content="Maker of Legend Guitar Tuner, an accurate guitar tuner with a live pitch graph.">
+<meta property="og:url" content="https://ashishluke05.github.io/">
+<meta property="og:image" content="https://ashishluke05.github.io/assets/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="preload" href="assets/fonts/bricolage-700-800.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  :root { --bg: #ffffff; --fg: #1a2030; --muted: #5b6478; --accent: #0891b2; --card: #f2f5fa; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b1020; --fg: #e8ecf6; --muted: #9aa3b8; --accent: #22d3ee; --card: #141b2e; } }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
-  h1 { font-size: 1.8rem; margin: 0 0 24px; }
-  .app { background: var(--card); border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; }
-  .app h2 { margin: 0 0 4px; font-size: 1.2rem; }
-  .app p { margin: 0 0 8px; color: var(--muted); }
-  a { color: var(--accent); }
+  /* Layout: the name set large, then a full-width tuner strip with a cents scale. The in-tune
+     centre line of that strip is the one bold element; everything below it stays quiet. */
+  @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/bricolage-700-800.woff2") format("woff2"); font-weight: 700 800; font-display: swap; }
+  @font-face { font-family: "Instrument Sans"; src: url("assets/fonts/instrument-400-600.woff2") format("woff2"); font-weight: 400 600; font-display: swap; }
+  @font-face { font-family: "IBM Plex Mono"; src: url("assets/fonts/plexmono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "IBM Plex Mono"; src: url("assets/fonts/plexmono-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+  :root {
+    color-scheme: dark;
+    --bg: #0b1020;
+    --surface: #131a31;
+    --line: #27304c;
+    --fg: #e8ecf6;
+    --muted: #9aa3b8;
+    --accent: #22d3ee;
+    --accent-ink: #06202a;
+    --tune: #3dffa2;
+    --off: #ffc53d;
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #f2f5fa;
+      --surface: #ffffff;
+      --line: #d3dae8;
+      --fg: #111a30;
+      --muted: #4e5a72;
+      --accent: #086f8a;
+      --accent-ink: #ffffff;
+      --tune: #06794f;
+      --off: #975e00;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  h1, h2, h3, p, dl, dd, ul { margin: 0; padding: 0; }
+  ul { list-style: none; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 800; text-wrap: balance; }
+
+  .wrap {
+    width: 100%; max-width: 1180px; margin-inline: auto;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .label { font: 500 0.75rem/1.4 var(--mono); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+
+  .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+  .wordmark { font: 700 1.05rem/1 var(--display); color: var(--fg); text-decoration: none; }
+  .site-head nav { display: flex; gap: 22px; }
+  .site-head nav a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+  .site-head nav a:hover { color: var(--fg); }
+
+  .hero .wrap { display: grid; gap: 18px; padding-block: 34px 30px; }
+  .hero h1 { font-size: clamp(3.3rem, 13.4vw, 10.25rem); line-height: 0.94; letter-spacing: -0.035em; }
+  .hero-line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 32px; }
+  .hero-line p { font-size: clamp(1.15rem, 2.2vw, 1.45rem); line-height: 1.4; max-width: 42em; color: var(--muted); text-wrap: pretty; }
+  .hero-line p strong { color: var(--fg); font-weight: 600; }
+
+  /* Tuner strip */
+  .strip { border-block: 1px solid var(--line); background: var(--surface); }
+  .strip-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding-block: 16px; }
+  .readout { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 18px; font-family: var(--mono); font-variant-numeric: tabular-nums; min-width: 0; }
+  .note { font: 800 2.5rem/1 var(--display); color: var(--fg); }
+  .note sub { font: 500 1rem/1 var(--mono); color: var(--muted); vertical-align: baseline; margin-left: 2px; }
+  .hz { color: var(--muted); }
+  .status { font-weight: 500; color: var(--off); }
+  .status[data-in="true"] { color: var(--tune); }
+  .strings { display: flex; flex-wrap: wrap; gap: 6px; }
+  .strings button {
+    width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: transparent;
+    color: var(--fg); cursor: pointer; font: 600 0.95rem/1 var(--body); padding: 0; transition: border-color .15s, background-color .15s;
+  }
+  .strings button small { font: 500 0.62rem/1 var(--mono); color: var(--muted); margin-left: 1px; }
+  .strings button:hover { border-color: var(--accent); }
+  .strings button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .strings button[aria-pressed="true"] small { color: inherit; }
+  #tuner { display: block; width: 100%; height: clamp(230px, 30vw, 330px); }
+  .strip-note { padding-block: 10px 14px; color: var(--muted); font-size: 0.9rem; }
+
+  /* Apps */
+  section { scroll-margin-top: 16px; }
+  .apps .wrap { display: grid; gap: 48px; padding-block: 72px; }
+  .app { display: grid; gap: 40px 56px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; }
+  .app-copy { display: grid; gap: 22px; min-width: 0; }
+  .app-title { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .app-title img { width: 64px; height: 64px; border-radius: 15px; flex: none; }
+  .app-title h3 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.08; letter-spacing: -0.015em; }
+  .pill { justify-self: start; font: 500 0.8rem/1 var(--mono); color: var(--tune); border: 1px solid currentColor; border-radius: 999px; padding: 7px 11px; }
+  .lede { font-size: 1.2rem; line-height: 1.5; }
+
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; border-block: 1px solid var(--line); padding-block: 18px; }
+  .facts dd { font: 800 1.65rem/1.15 var(--display); margin-top: 6px; font-variant-numeric: tabular-nums; }
+
+  .plans { display: grid; }
+  .plans li { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 14px; padding-block: 11px; border-bottom: 1px solid var(--line); }
+  .plans li:last-child { border-bottom: 0; }
+  .plans b { font-weight: 600; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+
+  .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; min-width: 0; position: sticky; top: 24px; }
+  .shots figure { margin: 0; display: grid; gap: 10px; min-width: 0; }
+  .shots figure:nth-child(2) { transform: translateY(26px); }
+  .shots img { border-radius: 18px; border: 1px solid var(--line); width: 100%; }
+  .shots figcaption { font: 400 0.8rem/1.35 var(--mono); color: var(--muted); }
+
+  /* Testers */
+  .testers { background: var(--surface); border-block: 1px solid var(--line); }
+  .testers .wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 24px 48px; align-items: center; padding-block: 52px; }
+  .testers h2 { font-size: clamp(1.8rem, 4vw, 2.75rem); line-height: 1.08; letter-spacing: -0.015em; margin-bottom: 10px; }
+  .testers p { max-width: 38em; color: var(--muted); }
+  .button { display: inline-flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none; }
+  .button:hover { filter: brightness(1.08); }
+
+  /* Footer */
+  .site-foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px 48px; padding-block: 44px 52px; }
+  .site-foot h2 { font-size: 1.5rem; margin-bottom: 6px; }
+  .site-foot p { color: var(--muted); }
+  .site-foot .meta { align-self: flex-end; font-size: 0.92rem; }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .shots { position: static; }
+    .shots figure:nth-child(2) { transform: none; }
+    .testers .wrap { grid-template-columns: minmax(0, 1fr); }
+    .testers .button { justify-self: start; }
+  }
+  @media (max-width: 560px) {
+    .apps .wrap { padding-block: 52px; }
+    .strings { width: 100%; justify-content: space-between; gap: 2px; }
+    .strings button { width: 44px; height: 44px; }
+    .shots { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 8px; }
+    .shots figure { scroll-snap-align: start; }
+    .facts dd { font-size: 1.35rem; }
+    .facts .label { font-size: 0.68rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Android apps</h1>
-  <div class="app">
-    <h2>Legend Guitar Tuner</h2>
-    <p>Accurate guitar tuner with a live pitch graph. Standard tuning is always free.</p>
-    <a href="pro-guitar-tuner/privacy-policy.html">Privacy policy</a>
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="#top">Ashish Kumar</a>
+    <nav aria-label="Main">
+      <a href="#apps">Apps</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </div>
-  <p>Support: <a href="mailto:maxste007@gmail.com">maxste007@gmail.com</a></p>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <p class="label">Independent Android developer</p>
+      <h1>Ashish Kumar</h1>
+      <div class="hero-line">
+        <p>I build focused, carefully tuned Android apps. <strong>The first one is for guitar players.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="strip" aria-label="Simulated guitar tuner">
+    <div class="wrap">
+      <div class="strip-top">
+        <div class="readout" aria-live="off">
+          <span class="note" id="note">A<sub>2</sub></span>
+          <span class="hz" id="hz">110.0 Hz</span>
+          <span class="status" id="status" data-in="true">In tune</span>
+        </div>
+        <div class="strings" id="strings" role="group" aria-label="Choose a guitar string"></div>
+      </div>
+    </div>
+    <canvas id="tuner" role="img" aria-label="A pitch trace scrolling down a scale from minus 50 to plus 50 cents and settling on the green in-tune line."></canvas>
+    <div class="wrap">
+      <p class="strip-note">A simulation of the pitch graph in Legend Guitar Tuner. Tap a string to pluck it. The app itself listens through your phone's microphone.</p>
+    </div>
+  </div>
+
+  <section class="apps" id="apps" aria-labelledby="apps-heading">
+    <div class="wrap">
+      <h2 class="label" id="apps-heading">Apps</h2>
+      <article class="app">
+        <div class="app-copy">
+          <div class="app-title">
+            <img src="assets/legend-guitar-tuner-icon.png" width="64" height="64" alt="">
+            <h3>Legend Guitar Tuner</h3>
+          </div>
+          <p class="pill">In closed testing on Google Play</p>
+          <p class="lede">An accurate guitar tuner with a live pitch graph. Watch each string settle into tune, and get clear tune up or tune down guidance.</p>
+          <dl class="facts">
+            <div><dt class="label">Tunings</dt><dd>18</dd></div>
+            <div><dt class="label">Reference</dt><dd>415–466 Hz</dd></div>
+            <div><dt class="label">Precision</dt><dd>±2 to ±5¢</dd></div>
+          </dl>
+          <ul class="plans">
+            <li><b>Free</b><span>Standard tuning and your own custom tunings, with no ads.</span></li>
+            <li><b>One ad</b><span>Watch a short ad to unlock another tuning until you close the app.</span></li>
+            <li><b>Pro</b><span>Every tuning and no ads, as a monthly or yearly subscription.</span></li>
+          </ul>
+          <p>Tuning works offline. Your audio stays on your device and is never recorded.</p>
+          <div class="links"><a href="pro-guitar-tuner/privacy-policy.html">Privacy policy</a></div>
+        </div>
+        <div class="shots">
+          <figure><img src="assets/tune-down.webp" width="540" height="1065" alt="The pitch graph showing A2 thirteen cents sharp with a tune down prompt." loading="lazy"><figcaption>Pitch graph</figcaption></figure>
+          <figure><img src="assets/in-tune.webp" width="540" height="1065" alt="The pitch graph with the A string settled on the in-tune line." loading="lazy"><figcaption>In tune</figcaption></figure>
+          <figure><img src="assets/arc-gauge.webp" width="540" height="1065" alt="The arc gauge view showing the high E string in tune." loading="lazy"><figcaption>Arc gauge</figcaption></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="testers" aria-labelledby="testers-heading">
+    <div class="wrap">
+      <div>
+        <h2 id="testers-heading">Play guitar? Help me test it.</h2>
+        <p>I'm looking for testers before the public release. You need an Android phone and a Gmail address, and the test runs for 14 days. Send me your Gmail address and I'll send you the join link.</p>
+      </div>
+      <a class="button" href="mailto:maxste007@gmail.com?subject=Legend%20Guitar%20Tuner%20tester">Become a tester</a>
+    </div>
+  </section>
 </main>
+
+<footer class="site-foot" id="contact">
+  <div class="wrap">
+    <div>
+      <h2>Contact</h2>
+      <p>Support and questions: <a href="mailto:maxste007@gmail.com">maxste007@gmail.com</a></p>
+    </div>
+    <p class="meta">© 2026 Ashish Kumar</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var STRINGS = [['E', 2, 82.41], ['A', 2, 110], ['D', 3, 146.83], ['G', 3, 196], ['B', 3, 246.94], ['E', 4, 329.63]];
+  var DETUNE = [-26, 17, -32, 22, -14, 28];
+  var TOLERANCE = 3, RANGE = 50, SPEED = 74, SETTLED = 6.5;
+
+  var canvas = document.getElementById('tuner');
+  var ctx = canvas.getContext('2d');
+  var note = document.getElementById('note');
+  var hz = document.getElementById('hz');
+  var status = document.getElementById('status');
+  var group = document.getElementById('strings');
+  var still = matchMedia('(prefers-reduced-motion: reduce)');
+  var light = matchMedia('(prefers-color-scheme: light)');
+
+  var current = 1, plucks = 0, detune = DETUNE[1], startedAt = 0, width = 0, height = 0;
+  var lastText = 0, visible = true, frame = 0, colors = {};
+
+  function readColors() {
+    var css = getComputedStyle(document.documentElement);
+    ['line', 'muted', 'tune', 'off'].forEach(function (name) { colors[name] = css.getPropertyValue('--' + name).trim(); });
+  }
+
+  // How far the string is from pitch t seconds after the pluck, as the player turns the peg.
+  function cents(t) {
+    return detune * Math.exp(-t / 1.2) * Math.cos(t * 1.9) + 0.5 * Math.sin(t * 6) * Math.exp(-t / 2.5);
+  }
+
+  function xFor(value) {
+    var half = width / 2, reach = Math.min(half - 26, 480);
+    return half + value / RANGE * reach;
+  }
+
+  function drawScale() {
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center';
+    for (var c = -RANGE; c <= RANGE; c += 5) {
+      var x = Math.round(xFor(c)) + 0.5, major = c % 25 === 0;
+      ctx.strokeStyle = colors.line;
+      ctx.globalAlpha = major ? 0.9 : 0.4;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, major ? 24 : 28);
+      ctx.lineTo(x, c % 10 === 0 || major ? height : 34);
+      ctx.stroke();
+      if (major && c !== 0) {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = colors.muted;
+        ctx.fillText((c > 0 ? '+' : '−') + Math.abs(c), x, 15);
+      }
+    }
+    ctx.globalAlpha = 0.14;
+    ctx.fillStyle = colors.tune;
+    ctx.fillRect(xFor(-TOLERANCE), 24, xFor(TOLERANCE) - xFor(-TOLERANCE), height - 24);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = colors.tune;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xFor(0), 22);
+    ctx.lineTo(xFor(0), height);
+    ctx.stroke();
+    ctx.fillStyle = colors.tune;
+    ctx.fillText('0 ¢', xFor(0), 15);
+  }
+
+  function drawTrace(t) {
+    var head = 34, step = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 3;
+    for (var y = head; y + step < height; y += step) {
+      var a = t - (y - head) / SPEED, b = t - (y + step - head) / SPEED;
+      if (b < 0) break;
+      var value = cents(a);
+      ctx.globalAlpha = Math.max(0, 1 - (y - head) / (height - head));
+      ctx.strokeStyle = Math.abs(value) <= TOLERANCE ? colors.tune : colors.off;
+      ctx.beginPath();
+      ctx.moveTo(xFor(value), y);
+      ctx.lineTo(xFor(cents(b)), y + step);
+      ctx.stroke();
+    }
+    var now = cents(t);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = Math.abs(now) <= TOLERANCE ? colors.tune : colors.off;
+    ctx.beginPath();
+    ctx.arc(xFor(now), head, 7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function updateText(t) {
+    var value = cents(t), inTune = Math.abs(value) <= TOLERANCE, s = STRINGS[current];
+    hz.textContent = (s[2] * Math.pow(2, value / 1200)).toFixed(1) + ' Hz';
+    status.textContent = inTune ? 'In tune' : (value > 0 ? 'Tune down' : 'Tune up');
+    status.dataset.in = inTune;
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, width, height);
+    drawScale();
+    drawTrace(t);
+  }
+
+  function resize() {
+    var ratio = Math.min(window.devicePixelRatio || 1, 2);
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    if (still.matches) draw(SETTLED);
+  }
+
+  function pluck(index) {
+    current = index;
+    plucks += 1;
+    detune = DETUNE[(index + plucks) % DETUNE.length];
+    startedAt = performance.now();
+    note.firstChild.nodeValue = STRINGS[index][0];
+    note.querySelector('sub').textContent = STRINGS[index][1];
+    Array.prototype.forEach.call(group.children, function (button, i) {
+      button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+    if (still.matches) { draw(SETTLED); updateText(SETTLED); }
+  }
+
+  function tick(now) {
+    frame = 0;
+    if (!visible || still.matches || document.hidden) return;
+    var t = (now - startedAt) / 1000;
+    if (t > SETTLED) { pluck((current + 1) % STRINGS.length); t = 0; }
+    draw(t);
+    if (now - lastText > 110) { updateText(t); lastText = now; }
+    frame = requestAnimationFrame(tick);
+  }
+
+  function run() { if (!frame && !still.matches) frame = requestAnimationFrame(tick); }
+
+  STRINGS.forEach(function (s, i) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-label', 'Pluck ' + s[0] + s[1] + ' string');
+    button.setAttribute('aria-pressed', i === current ? 'true' : 'false');
+    button.innerHTML = s[0] + '<small>' + s[1] + '</small>';
+    button.addEventListener('click', function () { pluck(i); run(); });
+    group.appendChild(button);
+  });
+
+  readColors();
+  resize();
+  startedAt = performance.now() - 1100;
+  draw(still.matches ? SETTLED : 1.1);
+  updateText(still.matches ? SETTLED : 1.1);
+  run();
+
+  window.addEventListener('resize', resize);
+  light.addEventListener('change', function () { readColors(); if (still.matches) draw(SETTLED); });
+  document.addEventListener('visibilitychange', run);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (still.matches) draw(SETTLED); });
+  new IntersectionObserver(function (entries) {
+    visible = entries[0].isIntersecting;
+    run();
+  }).observe(canvas);
+})();
+</script>
 </body>
 </html>
